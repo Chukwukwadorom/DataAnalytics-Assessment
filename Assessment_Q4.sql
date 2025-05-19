@@ -12,11 +12,9 @@ SELECT
 FROM 
     users_customuser u
     LEFT JOIN savings_savingsaccount s ON u.id = s.owner_id
-    LEFT JOIN plans_plan p ON s.plan_id = p.id
 WHERE 
     s.confirmed_amount > 0
     AND s.transaction_status = 'successful'
-    AND p.name NOT LIKE 'DELETEDW%'
 GROUP BY 
     u.id, u.name
 HAVING 
