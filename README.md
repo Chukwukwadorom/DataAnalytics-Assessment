@@ -14,11 +14,13 @@ Approach:
 
 6. Sort results by total_deposits in descending order.
 
-challenges:
+Challenges:
 
 Plan Type Definitions was ambigous.
+
 it had 4 distinct values: 1,2,3,4 without an easy way knowing what each number meant.
 overcoming challenges:
+
 I wrote this query: SELECT DISTINCT plan_type_id, name, description
                     FROM plans_plan
                     WHERE plan_type_id IS NOT NULL;
