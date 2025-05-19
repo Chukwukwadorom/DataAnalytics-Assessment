@@ -1,6 +1,7 @@
 Question 1:
 
 Approach:
+
 Join the users_customuser, savings_savingsaccount, and plans_plan tables to link customers to their funded plans.
 
 Categorize plans as savings or investments using appropriate fields from plans_plan.
