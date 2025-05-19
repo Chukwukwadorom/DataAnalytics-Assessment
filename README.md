@@ -15,6 +15,7 @@ Filter customers with at least one savings and one investment plan using a HAVIN
 Sort results by total_deposits in descending order.
 
 challenges:
+
 Plan Type Definitions was ambigous.
 it had 4 distinct values: 1,2,3,4 without an easy way knowing what each number meant.
 overcoming challenges:
