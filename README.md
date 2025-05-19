@@ -32,6 +32,9 @@ plan_type_id = 3: Savings (‘Vacation’, ‘Home’).
 plan_type_id = 4: Savings (‘Emergency’).
 
 
+
+
+
 Question 4:
 
 Approach:
@@ -51,78 +54,85 @@ Approach:
 7. Sort by estimated_clv descending.
 
 
+
+
 Question 3:
 
 Approach:
 1. Identify Active Savings/Investment Plans
-Filter plans_plan for:
+    Filter plans_plan for:
 
-is_deleted = FALSE (not deleted)
+    is_deleted = FALSE (not deleted)
 
-is_archived = FALSE (not archived)
+    is_archived = FALSE (not archived)
 
-Either is_regular_savings = TRUE (savings) or is_managed_portfolio = TRUE (investment)
+    Either is_regular_savings = TRUE (savings) or is_managed_portfolio = TRUE (investment)
 
-Classify plan type using CASE:
+    Classify plan type using CASE:
 
-sql
-CASE 
-    WHEN is_regular_savings THEN 'Savings'
-    WHEN is_managed_portfolio THEN 'Investment'
-END AS type
+    sql
+    CASE 
+        WHEN is_regular_savings THEN 'Savings'
+        WHEN is_managed_portfolio THEN 'Investment'
+    END AS type
 
 2. Find Last Successful Inflow Transaction per Plan
-Query savings_savingsaccount for:
+    Query savings_savingsaccount for:
 
-transaction_status = 'successful' (only completed transactions)
+    transaction_status = 'successful' (only completed transactions)
 
-amount > 0 (only deposits, not withdrawals)
+    amount > 0 (only deposits, not withdrawals)
 
-Use MAX(transaction_date) to get the most recent activity.
+    Use MAX(transaction_date) to get the most recent activity.
 
 3. Calculate Inactivity Period
-Join active plans with their last transaction dates.
+    Join active plans with their last transaction dates.
 
-Compute inactivity days:
+    Compute inactivity days:
 
-sql
-CURRENT_DATE - last_transaction_date AS inactivity_days
-Flag accounts where:
+    sql
+    CURRENT_DATE - last_transaction_date AS inactivity_days
+    Flag accounts where:
 
-No transactions ever (last_transaction_date IS NULL)
+    No transactions ever (last_transaction_date IS NULL)
 
-No transactions in >365 days (inactivity_days > 365)
+    No transactions in >365 days (inactivity_days > 365)
 
 4. Return Results
-Columns:
+    Columns:
 
-plan_id, owner_id, type (Savings/Investment)
+    plan_id, owner_id, type (Savings/Investment)
 
-last_transaction_date, inactivity_days
+    last_transaction_date, inactivity_days
 
-Sort by inactivity_days DESC (most inactive first).
+    Sort by inactivity_days DESC (most inactive first).
+
+
+
+
+
 
 Question 2:
 
 Approach:
 1. Data Collection & Monthly Aggregation
-Extracted transaction data by joining users_customuser and savings_savingsaccount
-Filtered for successful transactions only (transaction_status = 'successful')
+    Extracted transaction data by joining users_customuser and savings_savingsaccount
+    Filtered for successful transactions only (transaction_status = 'successful')
 
 2. Customer-Level Metrics Calculation
-Calculated average monthly transactions per customer (AVG(transaction_count))
-Categorized customers based on business rules:
+    Calculated average monthly transactions per customer (AVG(transaction_count))
+    Categorized customers based on business rules:
 
-High Frequency: ≥10 transactions/month
+    High Frequency: ≥10 transactions/month
 
-Medium Frequency: 3-9 transactions/month
+    Medium Frequency: 3-9 transactions/month
 
-Low Frequency: ≤2 transactions/month
+    Low Frequency: ≤2 transactions/month
 
 3. Final Aggregation & Reporting
-Counted customers in each category
-Calculated average transactions per month per segment
-Ordered results logically (High → Medium → Low)
+    Counted customers in each category
+    Calculated average transactions per month per segment
+    Ordered results logically (High → Medium → Low)
 
 
 
